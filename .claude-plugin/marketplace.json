@@ -1,0 +1,12 @@
+{
+  "name": "pi-baseline",
+  "owner": { "name": "Thinmindt" },
+  "description": "Baseline setup for Raspberry Pis managed with Claude Code",
+  "plugins": [
+    {
+      "name": "pi-baseline",
+      "source": "./",
+      "description": "Persistent journal plus supply-voltage and temperature logging for every Raspberry Pi"
+    }
+  ]
+}

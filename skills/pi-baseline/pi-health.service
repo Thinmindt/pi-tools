@@ -1,0 +1,14 @@
+[Unit]
+Description=Log Raspberry Pi supply voltage, temperature and throttling
+
+[Service]
+ExecStart=/usr/local/bin/pi-health
+SyslogIdentifier=pi-health
+Restart=always
+RestartSec=30
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target
