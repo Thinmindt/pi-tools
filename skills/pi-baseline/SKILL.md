@@ -1,6 +1,6 @@
 ---
 name: pi-baseline
-description: Baseline for every Raspberry Pi. Makes the systemd journal persistent and installs pi-health, which logs the 5 V supply voltage, SoC temperature and throttle flags every minute. Use when setting up a Raspberry Pi, starting a project that runs on one, or investigating why a Pi shut down or rebooted unexpectedly.
+description: Baseline for every Raspberry Pi. Makes the systemd journal persistent and installs pi-health, which logs the 5 V supply voltage, SoC temperature and throttle flags every minute, and pi-button, which logs power button presses. Use when setting up a Raspberry Pi, starting a project that runs on one, or investigating why a Pi shut down or rebooted unexpectedly.
 ---
 
 # Raspberry Pi baseline
@@ -9,7 +9,7 @@ Apply this to every Pi. Raspberry Pi OS keeps the journal in RAM by default, so 
 leaves no logs. A Pi 5 can switch itself off (solid red LED) because of a voltage fault or heat, and
 without these logs there is nothing to show which one happened.
 
-It installs two things:
+It installs three things:
 
 1. **A persistent journal.** It writes `Storage=persistent` to
    `/etc/systemd/journald.conf.d/80-raspi-config-journal-storage.conf`, the file that raspi-config's
@@ -20,6 +20,14 @@ It installs two things:
      moment, or when the 5 V input drops below 4.75 V (the USB minimum).
    - At startup it also logs the bootloader's reset reason (`rsts`) and the power chip's
      `power_reset` flag, which is non-zero if the power chip cut power because of a voltage fault.
+
+3. **pi-button.** `/usr/local/bin/pi-button` runs as `pi-button.service` and logs each press and
+   release of the Pi 5's power button (the `pwr_button` input device).
+   - Holding the button for several seconds makes the power chip cut power without telling Linux.
+     The Pi is left off with a solid red LED, and nothing else records the cause.
+   - The press is logged at critical priority, which journald syncs to disk at once, so the line
+     survives the power cut.
+   - On models without the button it logs that once and exits.
 
 pi-health adds the trend. Undervoltage events themselves are already covered, because the kernel's
 `rpi_volt` driver logs "Undervoltage detected!" at critical priority as soon as the firmware reports
@@ -32,16 +40,29 @@ themselves, either with the `!` prefix or in a terminal:
 
     sudo bash ${CLAUDE_SKILL_DIR}/install.sh
 
-It finishes with `systemctl status`. Check that the unit is `active (running)` and that there is a
-`boot:` line followed by one sample line.
+It finishes with `systemctl status`. Check that both units are `active (running)`, that pi-health
+shows a `boot:` line followed by one sample line, and that pi-button shows `watching /dev/input/…`.
+On a model without the power button, pi-button is `inactive (dead)` instead.
 
 ## Reading the logs
 
 - `journalctl -t pi-health -p warning`: problems only
 - `journalctl -t pi-health --since today`: the full trend
 - `journalctl -k -g 'Undervoltage|Voltage normalised'`: the kernel's real-time undervoltage events
+- `journalctl -t pi-button`: power button presses
 - `journalctl -b -1 -e`: the end of the previous boot, after a crash
 - `pi-health --once`: the current reading, printed to the terminal
+
+## After an unexpected power-off
+
+If the Pi was found off with a solid red LED, look at the end of `journalctl -b -1 -t pi-button`:
+
+- `power button pressed` as the last line, with no `released` after it: the button was held until
+  the power chip cut power.
+- A press and release followed by a normal shutdown sequence: a short press asked Linux to shut
+  down. systemd-logind logs "Power key pressed short" as well.
+- Nothing near the end: the button was not involved. Check the `boot:` line of the next boot and
+  the last pi-health samples, then suspect the power chip or the board.
 
 ## Notes
 

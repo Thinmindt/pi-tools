@@ -1,0 +1,14 @@
+[Unit]
+Description=Log Raspberry Pi power button presses
+
+[Service]
+ExecStart=/usr/local/bin/pi-button
+SyslogIdentifier=pi-button
+Restart=on-failure
+RestartSec=30
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target
