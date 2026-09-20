@@ -50,14 +50,15 @@ one.
 
 ## Install
 
-The installer needs root and is safe to re-run. If sudo asks for a password, the user has to run it
-themselves, either with the `!` prefix or in a terminal:
+The installer is `install.sh` in this skill's directory (the plugin root's `skills/pi-baseline/`, or
+the same path in a clone of the repo). It needs root and is safe to re-run. If sudo asks for a
+password, the user has to run it themselves, either with the `!` prefix or in a terminal:
 
-    sudo bash /home/butler/sw/pi-baseline/skills/pi-baseline/install.sh
+    sudo bash <skill directory>/install.sh
 
 To enable the heartbeat, pass the ping URL once; it is kept in `/etc/pi-baseline/heartbeat.env`:
 
-    sudo bash /home/butler/sw/pi-baseline/skills/pi-baseline/install.sh --heartbeat-url https://hc-ping.com/...
+    sudo bash <skill directory>/install.sh --heartbeat-url https://hc-ping.com/...
 
 On Healthchecks.io set the check's period to 1 minute and its grace time to a few minutes; the alert
 arrives when period plus grace have passed with no ping.
