@@ -1,0 +1,10 @@
+[Unit]
+Description=Ping the dead man's switch that alerts when this Pi goes quiet
+ConditionPathExists=/etc/pi-baseline/heartbeat.env
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/pi-baseline/heartbeat.env
+ExecStart=/usr/bin/curl -fsS -m 10 --retry 2 -o /dev/null ${HEARTBEAT_URL}
+SyslogIdentifier=pi-heartbeat
+DynamicUser=yes

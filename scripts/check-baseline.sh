@@ -4,8 +4,10 @@ grep -qs 'Raspberry Pi' /proc/device-tree/model || exit 0
 
 missing=()
 [ -e "/var/log/journal/$(cat /etc/machine-id)/system.journal" ] || missing+=("persistent journal")
+[ -e /etc/systemd/journald.conf.d/81-pi-baseline-journal-sync.conf ] || missing+=("journal sync interval")
 systemctl is-active --quiet pi-health.service || missing+=("pi-health logger")
 systemctl is-enabled --quiet pi-button.service 2>/dev/null || missing+=("pi-button logger")
+systemctl is-enabled --quiet pi-wake.service 2>/dev/null || missing+=("pi-wake alarm")
 [ ${#missing[@]} -eq 0 ] && exit 0
 
 echo "This Raspberry Pi is missing the pi-baseline: ${missing[*]}. Before other setup work, offer to install it using the pi-baseline skill."
