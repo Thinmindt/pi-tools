@@ -1,0 +1,17 @@
+[Unit]
+Description=Keep an RTC wake alarm armed so the Pi powers back on after an unexpected power-off
+ConditionPathExists=/sys/class/rtc/rtc0/wakealarm
+
+[Service]
+ExecStart=/usr/local/bin/pi-wake
+ExecStopPost=/usr/local/bin/pi-wake --disarm
+SyslogIdentifier=pi-wake
+StateDirectory=pi-baseline
+Restart=always
+RestartSec=30
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target

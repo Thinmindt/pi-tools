@@ -6,7 +6,7 @@
     {
       "name": "pi-baseline",
       "source": "./",
-      "description": "Persistent journal plus supply-voltage and temperature logging for every Raspberry Pi"
+      "description": "Persistent journal, power and thermal logging, self power-on after a power-off, and a heartbeat for every Raspberry Pi"
     }
   ]
 }
