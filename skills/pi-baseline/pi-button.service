@@ -4,6 +4,7 @@ Description=Log Raspberry Pi power button presses
 [Service]
 ExecStart=/usr/local/bin/pi-button
 SyslogIdentifier=pi-button
+StateDirectory=pi-baseline
 Restart=on-failure
 RestartSec=30
 NoNewPrivileges=yes
