@@ -29,8 +29,10 @@ It installs five things:
    release of the Pi 5's power button (the `pwr_button` input device).
    - Holding the button for several seconds makes the power chip cut power without telling Linux.
      The Pi is left off with a solid red LED, and nothing else records the cause.
-   - The press is logged at critical priority, which journald syncs to disk at once, so the line
-     survives the power cut.
+   - The press is logged at critical priority, which journald syncs to disk at once, and appended
+     with an fsync to `/var/lib/pi-baseline/button.log`, which survives the power cut even when
+     journald's sync does not finish in time. At startup it logs the last line of that file, so
+     `journalctl -t pi-button` after a power-off shows the last press without opening the file.
    - On models without the button it logs that once and exits.
 4. **pi-wake.** `/usr/local/bin/pi-wake` runs as `pi-wake.service` and keeps the RTC wake alarm
    armed 10 minutes ahead, re-arming every 5 minutes. The Pi 5 powers on from the power chip's
@@ -73,7 +75,8 @@ power button pi-button is `inactive (dead)` instead, and on one without an RTC s
 - `journalctl -t pi-health -p warning`: problems only
 - `journalctl -t pi-health --since today`: the full trend
 - `journalctl -k -g 'Undervoltage|Voltage normalised'`: the kernel's real-time undervoltage events
-- `journalctl -t pi-button`: power button presses
+- `journalctl -t pi-button`: power button presses, and at each start the last press on record
+- `cat /var/lib/pi-baseline/button.log`: every press and release, fsynced as it happened
 - `journalctl -t pi-wake`: whether each boot followed a clean shutdown, and what powered the Pi on
 - `journalctl -t pi-heartbeat`: failed pings (a successful one logs nothing)
 - `journalctl -b -1 -e`: the end of the previous boot, after a crash

@@ -8,8 +8,9 @@ A Claude Code plugin that gives every Raspberry Pi the same baseline:
 - **pi-health.** Logs the 5 V supply voltage, the PMIC's core, 3.3 V and 1.8 V rails, SoC temperature
   and firmware throttle flags to the journal once a minute. Any line that reports a problem is logged
   as a warning.
-- **pi-button.** Logs every press of the Pi 5's power button. A long press forces the power off
-  without telling Linux, so this line is the only record that it happened.
+- **pi-button.** Logs every press of the Pi 5's power button, to the journal and to an fsynced file
+  of its own. A long press forces the power off without telling Linux, so that record is the only
+  evidence that it happened.
 - **pi-wake.** Keeps the Pi 5's RTC wake alarm armed ten minutes ahead, so a Pi that the power chip has
   switched off powers itself back on instead of waiting for someone to notice. A clean shutdown
   disarms it.
@@ -50,7 +51,8 @@ claude plugin update pi-baseline@pi-baseline
 ```
 journalctl -t pi-health -p warning      # problems only
 journalctl -t pi-health --since today   # the trend
-journalctl -t pi-button                 # power button presses
+journalctl -t pi-button                 # power button presses; at each start, the last on record
+cat /var/lib/pi-baseline/button.log     # every press and release, fsynced as it happened
 journalctl -t pi-wake                   # did the last boot follow a clean shutdown; what powered it on
 journalctl -b -1 -e                     # end of the previous boot, after a crash
 pi-health --once                        # current reading
