@@ -39,6 +39,12 @@ git clone https://github.com/Thinmindt/pi-tools
 sudo bash pi-tools/skills/pi-baseline/install.sh [--heartbeat-url https://hc-ping.com/...]
 ```
 
+## Checks
+
+`scripts/check.sh` runs every gate, locally and in CI: the privacy check (the conventions plugin's
+`check_private.sh`, copied unchanged, reading a gitignored `.private-terms`), the JSON files parse,
+shellcheck, ruff and codespell. It needs `uv`; the tools run through `uvx` at pinned versions.
+
 ## Updating
 
 After changing the kit, bump `version` in `.claude-plugin/plugin.json` and push. Then on each Pi, run
