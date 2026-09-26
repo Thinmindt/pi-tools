@@ -25,7 +25,9 @@ def log(level: int, message: str) -> None:
 
 
 def record(at: float, message: str) -> None:
-    line = f"{datetime.fromtimestamp(at).isoformat(timespec='milliseconds')} {message}\n"
+    line = (
+        f"{datetime.fromtimestamp(at).isoformat(timespec='milliseconds')} {message}\n"
+    )
     try:
         with RECORD.open("a") as f:
             f.write(line)
@@ -63,7 +65,9 @@ def watch(device: Path) -> None:
                 log(CRITICAL, "power button pressed")
                 record(now, "pressed")
             elif value == 0:
-                held = f" after {now - pressed_at:.1f} s" if pressed_at is not None else ""
+                held = (
+                    f" after {now - pressed_at:.1f} s" if pressed_at is not None else ""
+                )
                 pressed_at = None
                 log(NOTICE, f"power button released{held}")
                 record(now, f"released{held}")

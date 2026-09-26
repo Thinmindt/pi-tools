@@ -1,6 +1,7 @@
-# pi-baseline
+# pi-tools
 
-A Claude Code plugin that gives every Raspberry Pi the same baseline:
+A Claude Code plugin marketplace for Raspberry Pis. Its one plugin so far is **pi-baseline**, which
+gives every Raspberry Pi the same baseline:
 
 - **A persistent systemd journal, synced every 30 s.** Raspberry Pi OS keeps the journal in RAM, so
   after an unexpected power-off there are no logs to explain it; and journald's default 5 min sync
@@ -23,18 +24,29 @@ install it.
 ## Setting up a new Pi
 
 ```
-claude plugin marketplace add Thinmindt/pi-baseline
-claude plugin install pi-baseline@pi-baseline
+claude plugin marketplace add Thinmindt/pi-tools
+claude plugin install pi-baseline@pi-tools
 ```
+
+A Pi that added this marketplace when it was called `pi-baseline` runs
+`claude plugin marketplace remove pi-baseline` first. What is already installed on the Pi (the
+journal settings, the services, `/etc/pi-baseline` and `/var/lib/pi-baseline`) is untouched, and
+the plugin keeps its name.
 
 Then start Claude Code in any project and accept its offer to install. The installer needs sudo.
 
 To install without Claude Code:
 
 ```
-git clone https://github.com/Thinmindt/pi-baseline
-sudo bash pi-baseline/skills/pi-baseline/install.sh [--heartbeat-url https://hc-ping.com/...]
+git clone https://github.com/Thinmindt/pi-tools
+sudo bash pi-tools/skills/pi-baseline/install.sh [--heartbeat-url https://hc-ping.com/...]
 ```
+
+## Checks
+
+`scripts/check.sh` runs every gate, locally and in CI: the privacy check (the conventions plugin's
+`check_private.sh`, copied unchanged, reading a gitignored `.private-terms`), the JSON files parse,
+shellcheck, ruff and codespell. It needs `uv`; the tools run through `uvx` at pinned versions.
 
 ## Updating
 
@@ -42,8 +54,8 @@ After changing the kit, bump `version` in `.claude-plugin/plugin.json` and push.
 the following and restart Claude Code:
 
 ```
-claude plugin marketplace update pi-baseline
-claude plugin update pi-baseline@pi-baseline
+claude plugin marketplace update pi-tools
+claude plugin update pi-baseline@pi-tools
 ```
 
 ## Reading the logs

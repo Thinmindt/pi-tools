@@ -1,7 +1,7 @@
 {
-  "name": "pi-baseline",
+  "name": "pi-tools",
   "owner": { "name": "Thinmindt" },
-  "description": "Baseline setup for Raspberry Pis managed with Claude Code",
+  "description": "Claude Code plugins for Raspberry Pis",
   "plugins": [
     {
       "name": "pi-baseline",
