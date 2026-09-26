@@ -3,17 +3,15 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-SHELLCHECK="uvx --from shellcheck-py==0.11.0.1 shellcheck"
-CODESPELL="uvx codespell==2.4.3"
-RUFF="uvx ruff@0.14.0"
+shellcheck=(uvx --from shellcheck-py==0.11.0.1 shellcheck)
+codespell=(uvx codespell==2.4.3)
+ruff=(uvx ruff@0.14.0)
+files() { git ls-files -z --cached --others --exclude-standard "$@"; }
 
 bash scripts/check_private.sh
-for json in $(git ls-files '*.json'); do
-    python3 -m json.tool "$json" >/dev/null
-done
-# shellcheck disable=SC2046
-$SHELLCHECK $(git ls-files '*.sh')
-$RUFF check .
-$RUFF format --check .
-git ls-files -z | xargs -0 $CODESPELL
+files '*.json' | xargs -0 -n1 python3 -m json.tool >/dev/null
+files '*.sh' | xargs -0 "${shellcheck[@]}"
+"${ruff[@]}" check .
+"${ruff[@]}" format --check .
+files | xargs -0 "${codespell[@]}"
 echo "all checks passed"
