@@ -3,5 +3,5 @@
   "version": "1.2.1",
   "author": { "name": "Thinmindt" },
   "description": "Makes the systemd journal persistent and logs 5 V supply voltage, PMIC rails, SoC temperature, throttling and power button presses on Raspberry Pis, keeps an RTC wake alarm armed so a Pi 5 powers back on after an unexpected power-off, and pings a dead man's switch. Prompts Claude to install it on any Pi that lacks it.",
-  "repository": "https://github.com/Thinmindt/pi-baseline"
+  "repository": "https://github.com/Thinmindt/pi-tools"
 }

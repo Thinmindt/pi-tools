@@ -23,17 +23,20 @@ install it.
 ## Setting up a new Pi
 
 ```
-claude plugin marketplace add Thinmindt/pi-baseline
+claude plugin marketplace add Thinmindt/pi-tools
 claude plugin install pi-baseline@pi-baseline
 ```
+
+The repository is `pi-tools`; the marketplace it provides and the plugin in it are both named
+`pi-baseline`, which is why the second line names it twice.
 
 Then start Claude Code in any project and accept its offer to install. The installer needs sudo.
 
 To install without Claude Code:
 
 ```
-git clone https://github.com/Thinmindt/pi-baseline
-sudo bash pi-baseline/skills/pi-baseline/install.sh [--heartbeat-url https://hc-ping.com/...]
+git clone https://github.com/Thinmindt/pi-tools
+sudo bash pi-tools/skills/pi-baseline/install.sh [--heartbeat-url https://hc-ping.com/...]
 ```
 
 ## Updating
